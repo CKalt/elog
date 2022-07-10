@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>elog</h2>
+
+<p>sending create_user post</p>
+<p>Click to trigger a function that will output to axum rest server.</p>
+
+<p>
+    <!-- Making a text input -->
+    <input type="text" id="username" placeholder="user name">
+
+    <!-- Button to send data -->
+    <button onclick="send_json()">Send JSON</button>
+
+    <!-- For printing result from server -->
+    <p class="result" style="color:green"></p>
+
+<button onclick="send_json()">Send create_user to endpoint</button>
+
+<script>
+function send_json() {
+    let result = document.querySelector('.result');
+    let username = document.querySelector('#username');
+			
+    // Creating a XHR object
+    let xhr = new XMLHttpRequest();
+    let url = "http://localhost:3000/users";
+    // open a connection
+    xhr.open("POST", url, true);
+
+    // Set the request header i.e. which type of content you are sending
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    // Create a state change callback
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // Print received data from server
+            result.innerHTML = this.responseText;
+        }
+    };
+
+    // Converting JSON data to string
+    var data = JSON.stringify({ "name": name.value, "email": email.value });
+
+    // Sending data with the request
+    xhr.send(data);
+}
+</script>
+
+</body>
+</html>
