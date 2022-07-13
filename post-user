@@ -1,5 +1,0 @@
-#!/bin/sh
-USERNAME=$1
-curl -v http://localhost:3000/users \
-   -H 'Content-Type: application/json' \
-   -d "{\"username\":\"$USERNAME\"}"

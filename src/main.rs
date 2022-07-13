@@ -57,7 +57,7 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(root))
-        .route("/users", post(create_user))
+        .route("/message", post(log_message))
         .layer(
             CorsLayer::new()
                 .allow_origin("http://localhost:8000".parse::<HeaderValue>().unwrap())
@@ -81,69 +81,36 @@ async fn root() -> axum::response::Html<&'static str> {
     include_str!("index.html").into()
 }
 
-async fn create_user(
+async fn log_message(
     // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
+    // as JSON into a `Message` type
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     Extension(state): Extension<Arc<State>>,
-    Json(payload): Json<CreateUser>,
+    Json(payload): Json<Message>,
 ) -> impl IntoResponse {
-
-// Add access-control header for browser usage
-// Access-Control-Allow-Origin:  http://127.0.0.1:3000
-// Access-Control-Allow-Methods: POST
-// Access-Control-Allow-Headers: Content-Type, Authorization
-//    Headers(vec![("X-Foo", "foo")])
-
     let locked_file = state.file.lock().await;
-    append_to_file(&locked_file, &payload.username);
+    append_to_file(&locked_file, &payload.message);
 
-    let user = User {
-        id: 7787,
-        username: payload.username,
-        addr: format!("Hello {}", addr),
+    let result = MessageResult {
+        message: payload.message,
+        addr: format!("{}", addr),
     };
 
-    /*
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        axum::http::header::ACCESS_CONTROL_ALLOW_ORIGIN, 
-        HeaderValue::from_str(&format!("{}", addr)).unwrap());
-
-    headers.insert(
-        axum::http::header::ACCESS_CONTROL_ALLOW_ORIGIN, 
-        HeaderValue::from_str(&format!("{}", "http://localhost:8000")).unwrap());
-
-    headers.insert(
-        axum::http::header::ACCESS_CONTROL_ALLOW_ORIGIN, 
-        HeaderValue::from_str(&format!("{}", "*")).unwrap());
-
-    headers.insert(
-        axum::http::header::ACCESS_CONTROL_ALLOW_METHODS, 
-        HeaderValue::from_str(&format!("{}", "POST")).unwrap());
-
-    headers.insert(
-        axum::http::header::ACCESS_CONTROL_ALLOW_HEADERS, 
-        HeaderValue::from_str(&format!("{}", "X-Requested-With")).unwrap());
-        */
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
     (
         StatusCode::CREATED, 
-        Json(user),
+        Json(result),
     )
 }
 
-// the input to our `create_user` handler
+// the input to our `log_message` handler
 #[derive(Deserialize)]
-struct CreateUser {
-    username: String,
+struct Message {
+    message: String,
 }
 
-// the output to our `create_user` handler
+// the output to our `log_message` handler
 #[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+struct MessageResult {
+    message: String,
     addr: String,
 }

@@ -1,7 +1,38 @@
 #!/bin/sh
-TEST_COUNT=100
+TEST_COUNT=1000
 rm -rf log-file
-./post-user-loop $TEST_COUNT A & \
-    ./post-user-loop $TEST_COUNT B & \
-    ./post-user-loop $TEST_COUNT C & \
-    ./post-user-loop $TEST_COUNT D &
+echo "Concurrently sending 4 message types- $TEST_COUNT times to elog server."
+./log-loop $TEST_COUNT A & \
+    ./log-loop $TEST_COUNT B & \
+    ./log-loop $TEST_COUNT C & \
+    ./log-loop $TEST_COUNT D
+sleep 3
+echo "Done."
+A_COUNT=$(grep "A:" log-file | wc -l)
+B_COUNT=$(grep "B:" log-file | wc -l)
+C_COUNT=$(grep "C:" log-file | wc -l)
+D_COUNT=$(grep "D:" log-file | wc -l)
+
+if ((TEST_COUNT==A_COUNT)); then
+    echo "A test passed. Recorded $A_COUNT type A messages."
+else
+    echo "A test failed. Got $A_COUNT, but expected $TEST_COUNT."
+fi
+
+if ((TEST_COUNT==B_COUNT)); then
+    echo "B test passed. Recorded $B_COUNT type B messages."
+else
+    echo "B test failed. Got $B_COUNT, but expected $TEST_COUNT."
+fi
+
+if ((TEST_COUNT==C_COUNT)); then
+    echo "C test passed. Recorded $C_COUNT type C messages."
+else
+    echo "C test failed. Got $C_COUNT, but expected $TEST_COUNT."
+fi
+
+if ((TEST_COUNT==D_COUNT)); then
+    echo "D test passed. Recorded $D_COUNT type D messages."
+else
+    echo "D test failed. Got $D_COUNT, but expected $TEST_COUNT."
+fi

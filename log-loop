@@ -4,6 +4,6 @@ LABEL=$2
 rm -rf ${LABEL}.log
 for ((i=1;i<=TEST_COUNT;i++)); 
 do 
-   ./post-user "${LABEL}:${i}" >> ${LABEL}.log
+   ./post-to-log "${LABEL}:${i}" >> ${LABEL}.log
    echo >> ${LABEL}.log
 done

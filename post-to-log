@@ -1,0 +1,6 @@
+#!/bin/sh
+MESSAGE=$1
+curl -s \
+   http://localhost:3000/message \
+   -H 'Content-Type: application/json' \
+   -d "{\"message\":\"$MESSAGE\"}"
