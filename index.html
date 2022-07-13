@@ -3,9 +3,9 @@
 <body>
 <h2>elog</h2>
 
-<p>sending create_user post</p>
+<p>sending elog message post</p>
 
-<input type="text" id="username" placeholder="user name">
+<input type="text" id="message" placeholder="user name">
 <button onclick="send_json()">Send JSON</button>
 
 <!-- For printing result from server -->
@@ -13,9 +13,8 @@
 
 <script>
 function send_json() {
-
     let result = document.querySelector('.result');
-    let username = document.querySelector('#username');
+    let message = document.querySelector('#message');
 			
     // Creating a XHR object
     let xhr = new XMLHttpRequest();
@@ -44,8 +43,8 @@ function send_json() {
     //xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8;application/json');
 
     // Converting JSON data to string
-    //alert('send-json username = ' + username.value);
-    var data = JSON.stringify({ "username": username.value });
+    //alert('send-json message = ' + message.value);
+    let data = JSON.stringify({ "message": message.value });
 
     // Sending data with the request
     xhr.send(data);

@@ -60,7 +60,8 @@ async fn main() {
         .route("/message", post(log_message))
         .layer(
             CorsLayer::new()
-                .allow_origin("http://localhost:8000".parse::<HeaderValue>().unwrap())
+                .allow_origin("*".parse::<HeaderValue>().unwrap())
+                //.allow_origin("http://localhost:8081".parse::<HeaderValue>().unwrap())
                 .allow_headers([axum::http::header::CONTENT_TYPE])
                 .allow_methods([Method::POST]),)
         .layer(Extension(shared_state.clone()));
