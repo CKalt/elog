@@ -4,5 +4,6 @@
 *.out
 *.tgz
 config.toml
+log-file
 *.err
 *.pid
